@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace SignalR.Demo.Server.Controllers
+namespace SignalR.Demo.Client.Controllers
 {
     [Route("")]
     public class HomeController : Controller
