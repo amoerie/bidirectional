@@ -28,6 +28,7 @@ namespace SignalR.Demo.Server.DependencyInjection
                     
                     /* silos */
                     new WebServerConfigurator(), 
+                    new SignalRConfigurator()
                 }
             );
 

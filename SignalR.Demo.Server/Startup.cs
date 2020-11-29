@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SignalR.Demo.Common.Extensions;
 using SignalR.Demo.Common.Web;
+using SignalR.Demo.Server.Hubs;
 
 namespace SignalR.Demo.Server
 {
@@ -72,6 +73,7 @@ namespace SignalR.Demo.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapHub<ChatHub>("/chathub");
             });
 
             logger.LogInformation("Web server is up and running.");
