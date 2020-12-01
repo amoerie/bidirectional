@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Server", "Bidirectional.Demo.Server\Bidirectional.Demo.Server.csproj", "{82884B8F-43E3-4EA0-841A-484088931D62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Common", "Bidirectional.Demo.Common\Bidirectional.Demo.Common.csproj", "{B89D7281-86E2-445A-AF70-DA284EE623B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Client", "Bidirectional.Demo.Client\Bidirectional.Demo.Client.csproj", "{DC20132C-C905-473A-A9BA-3E4258C4E6FC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{82884B8F-43E3-4EA0-841A-484088931D62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82884B8F-43E3-4EA0-841A-484088931D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82884B8F-43E3-4EA0-841A-484088931D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82884B8F-43E3-4EA0-841A-484088931D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B89D7281-86E2-445A-AF70-DA284EE623B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B89D7281-86E2-445A-AF70-DA284EE623B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B89D7281-86E2-445A-AF70-DA284EE623B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B89D7281-86E2-445A-AF70-DA284EE623B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC20132C-C905-473A-A9BA-3E4258C4E6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC20132C-C905-473A-A9BA-3E4258C4E6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC20132C-C905-473A-A9BA-3E4258C4E6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC20132C-C905-473A-A9BA-3E4258C4E6FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
