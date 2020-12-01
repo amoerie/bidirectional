@@ -28,6 +28,7 @@ namespace Bidirectional.Demo.Server.DependencyInjection
                     
                     /* silos */
                     new WebServerConfigurator(), 
+                    new GrpcConfigurator()
                 }
             );
 

@@ -1,6 +1,7 @@
 using System;
 using Bidirectional.Demo.Common.Extensions;
 using Bidirectional.Demo.Common.Web;
+using Bidirectional.Demo.Server.GrpcServices.ServerProcessInformation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -68,6 +69,7 @@ namespace Bidirectional.Demo.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
+                endpoints.MapGrpcService<GetServerProcessInfoService>();
             });
 
             logger.LogInformation("Web server is up and running.");

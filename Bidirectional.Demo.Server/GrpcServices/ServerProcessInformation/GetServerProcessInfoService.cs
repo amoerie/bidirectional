@@ -1,18 +1,12 @@
 using System;
 using System.Diagnostics;
-using System.ServiceModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Bidirectional.Demo.Common.Contracts.GetServerProcessInfo;
 
 namespace Bidirectional.Demo.Server.GrpcServices.ServerProcessInformation
 {
-    [ServiceContract]
-    public interface IGetServerProcessInfoService
-    {
-        Task<GetServerProcessInfoResponse> GetAsync(GetServerProcessInfoRequest request, CancellationToken cancellationToken = default);
-    }
-    
-    public class GetGetServerProcessInfoService : IGetServerProcessInfoService
+    public class GetServerProcessInfoService : IGetServerProcessInfoService
     {
         public Task<GetServerProcessInfoResponse> GetAsync(GetServerProcessInfoRequest request, CancellationToken cancellationToken = default)
         {

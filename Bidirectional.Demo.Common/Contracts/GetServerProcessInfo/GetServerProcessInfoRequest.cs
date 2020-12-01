@@ -1,6 +1,6 @@
 using ProtoBuf;
 
-namespace Bidirectional.Demo.Server.GrpcServices.ServerProcessInformation
+namespace Bidirectional.Demo.Common.Contracts.GetServerProcessInfo
 {
     [ProtoContract]
     public class GetServerProcessInfoRequest
