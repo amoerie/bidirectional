@@ -5,7 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Bidirectional.Demo.Common.Contracts.Client;
+using Bidirectional.Demo.Common.Contracts.Client.GetFile;
 using Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo;
+using Bidirectional.Demo.Common.Utilties;
 using Microsoft.Extensions.Logging;
 
 namespace Bidirectional.Demo.Server.GrpcServices.Client
@@ -80,6 +82,26 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
             var currentProcess = Process.GetCurrentProcess();
 
             var response = new GetServerProcessInfoResponse(currentProcess);
+
+            return Task.FromResult(response);
+        }
+
+        public Task<GetFileResponse> GetFileAsync(GetFileRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var stopWatch = Stopwatch.StartNew();
+
+            var bytes = RandomBytesGenerator.Generate(request.RequestedSizeInBytes ?? 1024 * 1024);
+
+            var response = new GetFileResponse()
+            {
+                Bytes = bytes,
+                FileName = "file.rnd",
+                GenerationTimeInMs = stopWatch.ElapsedMilliseconds
+            };
 
             return Task.FromResult(response);
         }

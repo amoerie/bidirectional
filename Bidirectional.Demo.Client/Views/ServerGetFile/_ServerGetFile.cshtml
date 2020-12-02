@@ -1,0 +1,19 @@
+@model Bidirectional.Demo.Client.Models.Diagnostics.DiagnosticModel<Bidirectional.Demo.Common.Contracts.Client.GetFile.GetFileResponse>
+
+<div>
+
+    <dl>
+        <dt>File size</dt>
+        <dd>@(Model.Inner.Bytes.Length / 1024 / 1024) MB</dd>
+
+        <dt>File name</dt>
+        <dd>@Model.Inner.FileName</dd>
+
+        <dt>Time for generation of the file</dt>
+        <dd>@Model.Inner.GenerationTimeInMs</dd>
+
+
+        <dt>Total processing time</dt>
+        <dd>@Model.ProcessingTimeInMs</dd>
+    </dl>
+</div>
