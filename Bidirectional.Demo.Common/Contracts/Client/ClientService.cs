@@ -9,6 +9,7 @@ namespace Bidirectional.Demo.Common.Contracts.Client
     [Service]
     public interface IGrpcService
     {
+        // TODO Alex ReceiveRequestsAsync and SendResponsesAsync could be one single endpoint
         [Operation]
         IAsyncEnumerable<ClientRequest> ReceiveRequestsAsync(CancellationToken cancellationToken);
         
