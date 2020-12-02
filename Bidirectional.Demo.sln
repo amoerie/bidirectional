@@ -6,6 +6,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Common",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Client", "Bidirectional.Demo.Client\Bidirectional.Demo.Client.csproj", "{DC20132C-C905-473A-A9BA-3E4258C4E6FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{26797C9D-0B0E-458D-B4D4-C97EA1DC85CA}"
+ProjectSection(SolutionItems) = preProject
+	global.json = global.json
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

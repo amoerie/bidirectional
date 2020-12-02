@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Bidirectional.Demo.Common.Contracts.Client;
 using Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo;
 using Grpc.Net.ClientFactory;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace Bidirectional.Demo.Client.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
         {
-            var client = _grpcClientFactory.CreateClient<IGetServerProcessInfoService>(nameof(IGetServerProcessInfoService));
+            var client = _grpcClientFactory.CreateClient<IClientService>(nameof(IClientService));
             
             var getServerProcessInfoResponse = await client.GetAsync(new GetServerProcessInfoRequest(), cancellationToken).ConfigureAwait(false);
 

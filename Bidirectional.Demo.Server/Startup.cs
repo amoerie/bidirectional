@@ -2,7 +2,6 @@ using System;
 using Bidirectional.Demo.Common.Extensions;
 using Bidirectional.Demo.Common.Web;
 using Bidirectional.Demo.Server.GrpcServices.Client;
-using Bidirectional.Demo.Server.GrpcServices.Server.ServerProcessInformation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -70,7 +69,6 @@ namespace Bidirectional.Demo.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapGrpcService<GetServerProcessInfoService>();
                 endpoints.MapGrpcService<ClientService>();
             });
 

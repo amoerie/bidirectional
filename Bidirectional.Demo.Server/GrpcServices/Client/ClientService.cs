@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Bidirectional.Demo.Common.Contracts.Client;
+using Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo;
 using Microsoft.Extensions.Logging;
 
 namespace Bidirectional.Demo.Server.GrpcServices.Client
@@ -67,6 +69,19 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
                 
                 await _clientQueuedResponses.WriteAsync(response, cancellationToken).ConfigureAwait(false);
             }
+        }
+        
+        public Task<GetServerProcessInfoResponse> GetAsync(GetServerProcessInfoRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            var currentProcess = Process.GetCurrentProcess();
+
+            var response = new GetServerProcessInfoResponse(currentProcess);
+
+            return Task.FromResult(response);
         }
     }
 }

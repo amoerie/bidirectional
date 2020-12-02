@@ -7,13 +7,13 @@ namespace Bidirectional.Demo.Common.Contracts.Client.GetClientProcessInfo
     [ProtoContract]
     public class GetClientProcessInfoResponse : ClientResponse
     {
-        [ProtoMember(1, DataFormat = DataFormat.WellKnown)]
+        [ProtoMember(1)]
         public TimeSpan TotalProcessorTime { get; set; }
         
-        [ProtoMember(2, DataFormat = DataFormat.WellKnown)]
+        [ProtoMember(2)]
         public TimeSpan UserProcessorTime { get; set; }
         
-        [ProtoMember(3, DataFormat = DataFormat.WellKnown)]
+        [ProtoMember(3)]
         public TimeSpan PrivilegedProcessorTime { get; set; }
         
         [ProtoMember(4)]
