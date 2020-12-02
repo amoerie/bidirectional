@@ -27,15 +27,20 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
         
-        public IAsyncEnumerable<ClientRequest> ConnectAsync(IAsyncEnumerable<ClientResponse> responses)
+        public IAsyncEnumerable<ClientRequest> ReceiveRequestsAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Client is connecting to server");
-
-            // cancellationToken.Register(() => _logger.LogInformation("Connect cancellation token triggered"));
-            
-            Task.Run(() => ProcessResponsesAsync(responses, CancellationToken.None), CancellationToken.None);
+            _logger.LogInformation("Client is connecting to server to start receiving requests");
 
             return SendRequestsAsync(CancellationToken.None);
+        }
+
+        public async Task SendResponsesAsync(IAsyncEnumerable<ClientResponse> responses, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Client is connecting to server to start sending responses");
+
+            await ProcessResponsesAsync(responses, cancellationToken).ConfigureAwait(false);
+            
+            _logger.LogInformation("Client is disconnecting from server, no more responses to send");
         }
 
         private async IAsyncEnumerable<ClientRequest> SendRequestsAsync([EnumeratorCancellation] CancellationToken cancellationToken)

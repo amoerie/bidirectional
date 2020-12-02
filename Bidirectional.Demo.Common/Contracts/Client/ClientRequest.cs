@@ -7,7 +7,7 @@ namespace Bidirectional.Demo.Common.Contracts.Client
     [ProtoInclude(1, typeof(GetClientProcessInfoRequest))]
     public abstract class ClientRequest
     {
-        [ProtoMember(1)]
+        [ProtoMember(2)]
         public string RequestId { get; set; }
     }
 }

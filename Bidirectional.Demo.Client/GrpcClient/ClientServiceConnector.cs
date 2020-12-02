@@ -40,36 +40,57 @@ namespace Bidirectional.Demo.Client.GrpcClient
             
             _cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-            Task.Run(() => ConnectAsync(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
+            Task.Run(() => ReceiveRequestsAsync(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
+            Task.Run(() => SendResponsesAsync(_cancellationTokenSource.Token), _cancellationTokenSource.Token);
 
             return Task.CompletedTask;
         }
 
-        private async Task ConnectAsync(CancellationToken cancellationToken)
+        private async Task ReceiveRequestsAsync(CancellationToken cancellationToken)
         {
             try
             {
 
-                _logger.LogInformation("Connecting to server");
+                _logger.LogInformation("Connecting to server to receive requests");
 
                 var client = _grpcClientFactory.CreateClient<IClientService>(nameof(IClientService));
 
                 _logger.LogInformation("Created client service");
 
-                var responses = SendResponses(cancellationToken);
+                var requests = client.ReceiveRequestsAsync(cancellationToken);
 
-                _logger.LogInformation("Created responses IAsyncEnumerable");
-
-                var requests
-                    = client.ConnectAsync(responses);
-
-                _logger.LogInformation("Connected to server!");
+                _logger.LogInformation("Connected to server! Listening for incoming requests...");
 
                 await ProcessRequests(requests, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                _logger.LogCritical(e, "Failed to connect to server");
+                _logger.LogCritical(e, "Failed to connect to server to receive requests");
+            }
+        }
+
+        private async Task SendResponsesAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                _logger.LogInformation("Connecting to server to send responses");
+
+                var client = _grpcClientFactory.CreateClient<IClientService>(nameof(IClientService));
+
+                _logger.LogInformation("Created client service");
+
+                var responses = GetResponses(cancellationToken);
+
+                _logger.LogInformation("Created responses IAsyncEnumerable");
+
+                await client.SendResponsesAsync(responses, cancellationToken).ConfigureAwait(false);
+
+                _logger.LogInformation("Connected to server!");
+            }
+            catch (Exception e)
+            {
+                _logger.LogCritical(e, "Failed to connect to server to send responses");
             }
         }
 
@@ -83,7 +104,7 @@ namespace Bidirectional.Demo.Client.GrpcClient
             }
         }
 
-        private async IAsyncEnumerable<ClientResponse> SendResponses([EnumeratorCancellation] CancellationToken cancellationToken)
+        private async IAsyncEnumerable<ClientResponse> GetResponses([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             await foreach (var response in _clientQueuedResponses.ReadAsync(cancellationToken))
             {
