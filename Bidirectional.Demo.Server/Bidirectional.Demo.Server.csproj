@@ -59,7 +59,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="GrpcServices" />
+      <Folder Include="GrpcServices\Server" />
       <Folder Include="wwwroot\js" />
     </ItemGroup>
 

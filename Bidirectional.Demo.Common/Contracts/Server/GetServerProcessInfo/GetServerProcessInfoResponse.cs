@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using ProtoBuf;
 
-namespace Bidirectional.Demo.Common.Contracts.GetServerProcessInfo
+namespace Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo
 {
     [ProtoContract]
     public class GetServerProcessInfoResponse

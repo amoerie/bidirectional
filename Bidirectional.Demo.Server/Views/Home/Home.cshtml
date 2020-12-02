@@ -1,2 +1,12 @@
 
 <h1>Bidirectional Demo Server</h1>
+
+<button data-hx-get="@Url.Action("Get", "ClientProcessInfo")" 
+        data-hx-trigger="click" 
+        data-hx-target="#client-process-info">
+    Get Server Process Info
+</button>
+
+<div id="client-process-info">
+    
+</div>
