@@ -7,7 +7,7 @@ using ProtoBuf.Grpc.Configuration;
 namespace Bidirectional.Demo.Common.Contracts.Client
 {
     [Service]
-    public interface IClientService
+    public interface IGrpcService
     {
         [Operation]
         IAsyncEnumerable<ClientRequest> ReceiveRequestsAsync(CancellationToken cancellationToken);

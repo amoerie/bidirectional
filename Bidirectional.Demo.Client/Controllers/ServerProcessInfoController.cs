@@ -21,7 +21,7 @@ namespace Bidirectional.Demo.Client.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
         {
-            var client = _grpcClientFactory.CreateClient<IClientService>(nameof(IClientService));
+            var client = _grpcClientFactory.CreateClient<IGrpcService>(nameof(IGrpcService));
             
             var getServerProcessInfoResponse = await client.GetAsync(new GetServerProcessInfoRequest(), cancellationToken).ConfigureAwait(false);
 

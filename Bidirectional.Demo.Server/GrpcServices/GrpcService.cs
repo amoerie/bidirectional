@@ -10,18 +10,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Bidirectional.Demo.Server.GrpcServices.Client
 {
-    public class ClientService : IClientService
+    public class GrpcService : IGrpcService
     {
         private readonly IClientQueuedRequests _clientQueuedRequests;
         private readonly IClientPendingRequests _clientPendingRequests;
         private readonly IClientQueuedResponses _clientQueuedResponses;
-        private readonly ILogger<ClientService> _logger;
+        private readonly ILogger<GrpcService> _logger;
 
-        public ClientService(
+        public GrpcService(
             IClientQueuedRequests clientQueuedRequests,
             IClientPendingRequests clientPendingRequests, 
             IClientQueuedResponses clientQueuedResponses,
-            ILogger<ClientService> logger)
+            ILogger<GrpcService> logger)
         {
             _clientQueuedRequests = clientQueuedRequests ?? throw new ArgumentNullException(nameof(clientQueuedRequests));
             _clientPendingRequests = clientPendingRequests ?? throw new ArgumentNullException(nameof(clientPendingRequests));

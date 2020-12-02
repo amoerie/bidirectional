@@ -17,7 +17,7 @@ namespace Bidirectional.Demo.Client.DependencyInjection
     {
         public void Configure(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddCodeFirstGrpcClient<IClientService>(o =>
+            services.AddCodeFirstGrpcClient<IGrpcService>(o =>
             {
                 var handler = new SocketsHttpHandler
                 {

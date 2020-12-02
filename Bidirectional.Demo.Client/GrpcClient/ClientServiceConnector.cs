@@ -53,7 +53,7 @@ namespace Bidirectional.Demo.Client.GrpcClient
 
                 _logger.LogInformation("Connecting to server to receive requests");
 
-                var client = _grpcClientFactory.CreateClient<IClientService>(nameof(IClientService));
+                var client = _grpcClientFactory.CreateClient<IGrpcService>(nameof(IGrpcService));
 
                 _logger.LogInformation("Created client service");
 
@@ -76,7 +76,7 @@ namespace Bidirectional.Demo.Client.GrpcClient
 
                 _logger.LogInformation("Connecting to server to send responses");
 
-                var client = _grpcClientFactory.CreateClient<IClientService>(nameof(IClientService));
+                var client = _grpcClientFactory.CreateClient<IGrpcService>(nameof(IGrpcService));
 
                 _logger.LogInformation("Created client service");
 

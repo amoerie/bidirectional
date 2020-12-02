@@ -69,7 +69,7 @@ namespace Bidirectional.Demo.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
-                endpoints.MapGrpcService<ClientService>();
+                endpoints.MapGrpcService<GrpcService>();
             });
 
             logger.LogInformation("Web server is up and running.");
