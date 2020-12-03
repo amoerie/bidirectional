@@ -21,7 +21,7 @@ namespace Bidirectional.Demo.Client.GrpcClient.GetClientProcessInfo
 
             var currentProcess = Process.GetCurrentProcess();
 
-            var response = new GetClientProcessInfoResponse(currentProcess);
+            var response = currentProcess.ToGetClientProcessInfoResponse();
 
             return Task.FromResult(response);
         }

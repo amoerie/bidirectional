@@ -98,7 +98,7 @@ namespace Bidirectional.Demo.Client.GrpcClient
         {
             await foreach (var request in clientRequests.WithCancellation(cancellationToken))
             {
-                _logger.LogInformation($"Received request {request.RequestId}");
+                _logger.LogInformation($"Received request {request}");
 
                 await _clientQueuedRequests.WriteAsync(request, cancellationToken).ConfigureAwait(false);
             }
@@ -108,7 +108,7 @@ namespace Bidirectional.Demo.Client.GrpcClient
         {
             await foreach (var response in _clientQueuedResponses.ReadAsync(cancellationToken))
             {
-                _logger.LogInformation($"Returning response for request {response.RequestId}");
+                _logger.LogInformation($"Returning response {response}");
 
                 yield return response;
             }

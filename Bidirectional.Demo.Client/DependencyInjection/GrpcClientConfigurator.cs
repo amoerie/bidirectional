@@ -39,6 +39,7 @@ namespace Bidirectional.Demo.Client.DependencyInjection
             services.AddSingleton<IClientQueuedRequests, ClientQueuedRequests>();
             services.AddSingleton<IClientQueuedResponses, ClientQueuedResponses>();
             services.AddSingleton<IClientRequestProcessor, ClientRequestProcessor>();
+            services.AddSingleton<IClientResponseMetaDataFactory, ClientResponseMetaDataFactory>();
         }
     }
 }

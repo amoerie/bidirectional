@@ -2,9 +2,6 @@ using ProtoBuf;
 
 namespace Bidirectional.Demo.Common.Contracts.Client.GetClientProcessInfo
 {
-    [ProtoContract]
-    public class GetClientProcessInfoRequest : ClientRequest
-    {
-        
-    }
+    [ProtoContract(SkipConstructor = true)]
+    public record GetClientProcessInfoRequest() : ClientRequest(ClientRequestMetaData.Missing);
 }

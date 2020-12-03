@@ -31,12 +31,10 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
         {
             if (clientRequest == null) throw new ArgumentNullException(nameof(clientRequest));
 
-            var pendingClientRequest = new PendingClientRequest
-            {
-                Request = clientRequest,
-                Response = new TaskCompletionSource<ClientResponse>(TaskCreationOptions.RunContinuationsAsynchronously),
-                Status = ClientRequestStatus.Queued
-            };
+            var pendingClientRequest = new PendingClientRequest(
+                Request: clientRequest,
+                Response: new TaskCompletionSource<ClientResponse>(TaskCreationOptions.RunContinuationsAsynchronously)
+            );
 
             await _channel.Writer.WriteAsync(pendingClientRequest, cancellationToken).ConfigureAwait(false);
 

@@ -3,11 +3,9 @@ using ProtoBuf;
 
 namespace Bidirectional.Demo.Common.Contracts.Client
 {
-    [ProtoContract]
+    [ProtoContract(SkipConstructor = true)]
     [ProtoInclude(1, typeof(GetClientProcessInfoRequest))]
-    public abstract class ClientRequest
-    {
-        [ProtoMember(2)]
-        public string RequestId { get; set; }
-    }
+    public abstract record ClientRequest(
+        [property: ProtoMember(2)] ClientRequestMetaData MetaData
+    );
 }
