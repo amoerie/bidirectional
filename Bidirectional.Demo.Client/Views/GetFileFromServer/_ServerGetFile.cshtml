@@ -10,10 +10,15 @@
         <dd>@Model.Inner.FileName</dd>
 
         <dt>Time for generation of the file</dt>
-        <dd>@Model.Inner.GenerationTimeInMs</dd>
-
+        <dd>@Model.Inner.GenerationTimeInMs ms</dd>
 
         <dt>Total processing time</dt>
-        <dd>@Model.ProcessingTimeInMs</dd>
+        <dd>@Model.TotalCallTimeInMs ms</dd>
+
+        <dt>Total GRPC(network) time</dt>
+        <dd>@Model.NetworkTimeInMs ms</dd>
+
+        <dt>Transfer speed</dt>
+        <dd>@Model.TransferSpeedInMbPerS MB/s</dd>
     </dl>
 </div>

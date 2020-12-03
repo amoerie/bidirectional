@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Bidirectional.Demo.Common.Contracts.Client;
@@ -93,6 +94,8 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
             cancellationToken.ThrowIfCancellationRequested();
 
             var stopWatch = Stopwatch.StartNew();
+
+            _logger.LogInformation($"Processing client GetFileAsync request {JsonSerializer.Serialize(request)}");
 
             var bytes = RandomBytesGenerator.Generate(request.RequestedSizeInBytes ?? 1024 * 1024);
 

@@ -32,6 +32,10 @@ namespace Bidirectional.Demo.Client.DependencyInjection
                 {
                     o.HttpClient = null;
                     o.HttpHandler = handler;
+
+                    //TODO PJ: don't use 1GB as default
+                    o.MaxReceiveMessageSize = 1024 * 1024 * 1024; //Default 4MB
+                    o.MaxSendMessageSize = 1024 * 1024 * 1024;
                 });
             });
 

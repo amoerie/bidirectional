@@ -21,7 +21,7 @@ namespace Bidirectional.Demo.Client.Controllers
             _grpcClientFactory = grpcClientFactory ?? throw new ArgumentNullException(nameof(grpcClientFactory));
         }
 
-        [HttpGet("{id?}")]
+        [HttpGet("{numberOfBytes?}")]
         public async Task<IActionResult> GetAsync([FromRoute] int? numberOfBytes, CancellationToken cancellationToken)
         {
             var client = _grpcClientFactory.CreateClient<IGrpcService>(nameof(IGrpcService));
@@ -36,7 +36,11 @@ namespace Bidirectional.Demo.Client.Controllers
 
             var getFileFromServerResponse = await client.GetFileAsync(request, cancellationToken).ConfigureAwait(false);
 
-            var model = new DiagnosticModel<GetFileResponse?>(getFileFromServerResponse, stopWatch.ElapsedMilliseconds);
+            var model = new DiagnosticModel<GetFileResponse?>(
+                getFileFromServerResponse,
+                stopWatch.ElapsedMilliseconds,
+                getFileFromServerResponse.GenerationTimeInMs,
+                getFileFromServerResponse.Bytes.Length);
 
             return PartialView("_ServerGetFile", model);
         }

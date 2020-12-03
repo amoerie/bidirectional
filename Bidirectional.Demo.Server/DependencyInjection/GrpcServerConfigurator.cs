@@ -12,7 +12,14 @@ namespace Bidirectional.Demo.Server.DependencyInjection
     {
         public void Configure(HostBuilderContext context, IServiceCollection services)
         {
-            services.AddCodeFirstGrpc();
+            services.AddCodeFirstGrpc(options =>
+            {
+                //TODO PJ: Don't use 1GB as default...
+                options.MaxReceiveMessageSize = 1024 * 1024 * 1024; //Default is 4MB
+                options.MaxSendMessageSize = 1024 * 1024 * 1024; //Default is 4MB
+
+                options.EnableDetailedErrors = true;
+            });
             
             services.AddSingleton<IClientQueuedRequests, ClientQueuedRequests>();
             services.AddSingleton<IClientQueuedResponses, ClientQueuedResponses>();
