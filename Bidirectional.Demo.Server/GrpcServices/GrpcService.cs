@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Bidirectional.Demo.Common.Contracts.Client;
+using Bidirectional.Demo.Common.Contracts.Client.PingPong;
 using Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo;
 using Microsoft.Extensions.Logging;
 
@@ -80,6 +81,11 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
             var response = currentProcess.ToGetServerProcessInfoResponse();
 
             return Task.FromResult(response);
+        }
+
+        public Task<PingPongResponse> Ping(CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(new PingPongResponse(true));
         }
     }
 }

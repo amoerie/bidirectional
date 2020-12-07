@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Bidirectional.Demo.Common.Contracts.Client.PingPong;
 using Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo;
 using ProtoBuf.Grpc.Configuration;
 
@@ -18,5 +19,8 @@ namespace Bidirectional.Demo.Common.Contracts.Client
         
         [Operation]
         Task<GetServerProcessInfoResponse> GetAsync(GetServerProcessInfoRequest request, CancellationToken cancellationToken = default);
+
+        [Operation]
+        Task<PingPongResponse> Ping(CancellationToken cancellationToken = default);
     }
 }
