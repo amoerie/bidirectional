@@ -17,6 +17,7 @@ namespace Bidirectional.Demo.Server.DependencyInjection
             services.AddSingleton<IClientQueuedRequests, ClientQueuedRequests>();
             services.AddSingleton<IClientQueuedResponses, ClientQueuedResponses>();
             services.AddSingleton<IClientPendingRequests, ClientPendingRequests>();
+            services.AddSingleton<IClientRequestMetaDataFactory, ClientRequestMetaDataFactory>();
             services.AddSingleton<IClientRequestSender, ClientRequestSender>();
             services.AddSingleton<IGetClientProcessInfoService, GetClientProcessInfoService>();
         }

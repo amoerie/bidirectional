@@ -2,9 +2,6 @@ using ProtoBuf;
 
 namespace Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo
 {
-    [ProtoContract]
-    public class GetServerProcessInfoRequest
-    {
-        
-    }
+    [ProtoContract(SkipConstructor = true)]
+    public record GetServerProcessInfoRequest;
 }

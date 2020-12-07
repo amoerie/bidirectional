@@ -49,14 +49,12 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
         {
             await foreach (var queuedRequest in _clientQueuedRequests.ReadAsync(cancellationToken))
             {
-                _logger.LogInformation($"Sending request with ID '{queuedRequest.Request.RequestId}' to client");
+                _logger.LogInformation($"Sending request '{queuedRequest.Request}' to client");
                 
                 yield return queuedRequest.Request;
                 
-                _logger.LogInformation($"Request with ID '{queuedRequest.Request.RequestId}' has been sent to the client");
+                _logger.LogInformation($"Request '{queuedRequest.Request}' has been sent to the client");
                 
-                queuedRequest.Status = ClientRequestStatus.Sent;
-
                 _clientPendingRequests.Write(queuedRequest);
             }
         }
@@ -65,7 +63,7 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
         {
             await foreach (var response in responses.WithCancellation(cancellationToken))
             {
-                _logger.LogInformation($"Processing client response for request with ID '{response.RequestId}'");
+                _logger.LogInformation($"Processing client response for request '{response.MetaData.RequestId}'");
                 
                 await _clientQueuedResponses.WriteAsync(response, cancellationToken).ConfigureAwait(false);
             }
@@ -79,7 +77,7 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
             
             var currentProcess = Process.GetCurrentProcess();
 
-            var response = new GetServerProcessInfoResponse(currentProcess);
+            var response = currentProcess.ToGetServerProcessInfoResponse();
 
             return Task.FromResult(response);
         }

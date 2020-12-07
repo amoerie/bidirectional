@@ -63,23 +63,23 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
                 return;
             }
                 
-            if (string.IsNullOrEmpty(clientResponse.RequestId))
+            if (clientResponse.MetaData.Equals(ClientResponseMetaData.Missing))
             {
-                _logger.LogWarning($"Response {clientResponse?.GetType()} does not have a RequestId");
+                _logger.LogWarning($"Response {clientResponse} does not have meta data");
                 return;
             }
             
-            _logger.LogInformation($"Processing response for request with ID '{clientResponse.RequestId}'");
+            _logger.LogInformation($"Processing response for request '{clientResponse.MetaData.RequestId}'");
                 
-            if (!_clientPendingRequests.TryRead(clientResponse.RequestId, out var pendingClientRequest))
+            if (!_clientPendingRequests.TryRead(clientResponse.MetaData.RequestId, out var pendingClientRequest))
             {
-                _logger.LogWarning($"Response {clientResponse?.GetType()} with ID '{clientResponse.RequestId}' does not have a matching pending request");
+                _logger.LogWarning($"Response {clientResponse} with ID '{clientResponse.MetaData.RequestId}' does not have a matching pending request");
                 return;
             }
                 
             if (pendingClientRequest == null)
             {
-                _logger.LogWarning($"NULL request in pending client requests, request ID was '{clientResponse.RequestId}'");
+                _logger.LogWarning($"NULL request in pending client requests, request ID was '{clientResponse.MetaData.RequestId}'");
                 return;
             }
 

@@ -22,8 +22,8 @@ namespace Bidirectional.Demo.Server.GrpcServices.Client
         {
             if (pendingClientRequest == null) throw new ArgumentNullException(nameof(pendingClientRequest));
 
-            if (!_pendingRequests.TryAdd(pendingClientRequest.Request.RequestId, pendingClientRequest))
-                throw new InvalidOperationException("Another request with the same request ID is already pending: " + pendingClientRequest.Request.RequestId);
+            if (!_pendingRequests.TryAdd(pendingClientRequest.Request.MetaData.RequestId, pendingClientRequest))
+                throw new InvalidOperationException("Another request with the same request ID is already pending: " + pendingClientRequest.Request.MetaData.RequestId);
         }
 
         public bool TryRead(string requestId, out PendingClientRequest? pendingClientRequest)
