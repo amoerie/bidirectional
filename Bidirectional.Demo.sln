@@ -1,14 +1,16 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Server", "Bidirectional.Demo.Server\Bidirectional.Demo.Server.csproj", "{82884B8F-43E3-4EA0-841A-484088931D62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bidirectional.Demo.Server", "Bidirectional.Demo.Server\Bidirectional.Demo.Server.csproj", "{82884B8F-43E3-4EA0-841A-484088931D62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Common", "Bidirectional.Demo.Common\Bidirectional.Demo.Common.csproj", "{B89D7281-86E2-445A-AF70-DA284EE623B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bidirectional.Demo.Common", "Bidirectional.Demo.Common\Bidirectional.Demo.Common.csproj", "{B89D7281-86E2-445A-AF70-DA284EE623B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Demo.Client", "Bidirectional.Demo.Client\Bidirectional.Demo.Client.csproj", "{DC20132C-C905-473A-A9BA-3E4258C4E6FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bidirectional.Demo.Client", "Bidirectional.Demo.Client\Bidirectional.Demo.Client.csproj", "{DC20132C-C905-473A-A9BA-3E4258C4E6FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{26797C9D-0B0E-458D-B4D4-C97EA1DC85CA}"
 ProjectSection(SolutionItems) = preProject
 	global.json = global.json
+	Directory.Packages.props = Directory.Packages.props
+	Directory.Build.props = Directory.Build.props
 EndProjectSection
 EndProject
 Global

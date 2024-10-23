@@ -1,137 +1,85 @@
 using System;
-using System.Diagnostics;
-using System.IO;
+using System.Net.Http;
 using System.Threading;
-using Bidirectional.Demo.Client.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Bidirectional.Demo.Client.GrpcClient;
+using Bidirectional.Demo.Client.GrpcClient.GetClientProcessInfo;
+using Bidirectional.Demo.Common.Contracts.Client;
+using Bidirectional.Demo.Common.Logging;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.WindowsServices;
+using ProtoBuf.Grpc.ClientFactory;
 using Serilog;
-using Serilog.Core;
 
-namespace Bidirectional.Demo.Client
+ThreadPool.SetMinThreads(Environment.ProcessorCount * 8, 1000);
+ThreadPool.SetMaxThreads(Environment.ProcessorCount * 128, 1000);
+
+Log.Logger = LoggingConfigurator.CreateLogger();
+
+try
 {
-    public sealed class Program
+    Log.ForContext<Program>().Information("Starting up Bidirectional Demo Client");
+    
+    var builder = WebApplication.CreateBuilder(args);
+    var services = builder.Services;
+    
+    services.AddSerilog();
+    services.AddWindowsService();
+    services.AddControllersWithViews().AddApplicationPart(typeof(Program).Assembly);
+    services.AddHttpContextAccessor();
+    
+    services.AddHostedService<ClientServiceConnector>();
+    services.AddHostedService<ClientRequestsProcessor>();
+    
+    services.AddCodeFirstGrpcClient<IGrpcService>(o =>
     {
-        public static void Main(string[] args)
+        var handler = new SocketsHttpHandler
         {
-            ThreadPool.SetMinThreads(Environment.ProcessorCount * 8, 1000);
-            ThreadPool.SetMaxThreads(Environment.ProcessorCount * 128, 1000);
-                        
-            Log.Logger = CreateLogger(args);
+            PooledConnectionIdleTimeout = Timeout.InfiniteTimeSpan,
+            KeepAlivePingDelay = TimeSpan.FromSeconds(60), // This keeps the connection open at all times by pinging every 60s
+            KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+            EnableMultipleHttp2Connections = true,
+        };
 
-            try
-            {
-                Log.ForContext<Program>().Information("Starting up Bidirectional Demo Client");
-
-                CreateHostBuilder(args).Build().Run();
-            }
-            catch (Exception ex)
-            {
-                Log.ForContext<Program>().Fatal(ex, "Starting up failed for Bidirectional Demo Client");
-                throw;
-            }
-            finally
-            {
-                Log.CloseAndFlush();
-            }
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args)
+        o.Address = new Uri("https://localhost:22377");
+        o.ChannelOptionsActions.Add(o =>
         {
-            return Host.CreateDefaultBuilder(args)
-                .UseWindowsService()
-                .UseSerilog()
-                .ConfigureAppConfiguration(builder =>
-                {
-                    builder.AddJsonFile($"appsettings.{Environment.MachineName}.json", optional: true, reloadOnChange: true);
-                })
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-                .ConfigureServices(RootConfigurator.ConfigureServices);
-        }
-        
-        private static Logger CreateLogger(string[] args)
-        {
-            var environment = GetEnvironment();
-            var configuration = GetConfiguration();
-            var basePath = GetBasePath();
-            var outputTemplate =
-                "{Timestamp:HH:mm:ss.fff} [{Level:u4}] {ThreadName}#{ThreadId:000} ({SourceContext}) {Message}{NewLine}{Exception}";
+            o.HttpClient = null;
+            o.HttpHandler = handler;
+        });
+    });
 
-            return new LoggerConfiguration()
-                .WriteTo.Async(asyncConfig =>
-                {
-                    asyncConfig.Debug(outputTemplate: outputTemplate);
-                    asyncConfig.Console(outputTemplate: outputTemplate);
-                    asyncConfig.File(
-                        path: Path.Join(basePath, "logs\\Bidirectional.Demo.Client.-.log"),
-                        outputTemplate: outputTemplate,
-                        retainedFileCountLimit: 3,
-                        rollingInterval: RollingInterval.Day,
-                        rollOnFileSizeLimit: false,
-                        shared: true
-                    );
-                }, bufferSize: 100_000, blockWhenFull:true)
-                .ReadFrom.Configuration(configuration)
-                .Enrich.FromLogContext()
-                .Enrich.WithMachineName()
-                .Enrich.WithThreadId()
-                .Enrich.WithThreadName()
-                .CreateLogger();
-
-            string GetEnvironment()
-            {
-                return new ConfigurationBuilder()
-                           .AddCommandLine(args)
-                           .AddEnvironmentVariables()
-                           .Build()
-                           .GetValue<string>("Environment") 
-                       ?? (
-                           DebugDetector.AreWeInDebugMode
-                               ? Environments.Development
-                               : Environments.Production
-                       );
-            }
-
-            IConfigurationRoot GetConfiguration()
-            {
-                return new ConfigurationBuilder()
-                    .SetBasePath(GetBasePath())
-                    .AddJsonFile("appsettings.json", reloadOnChange: true, optional: false)
-                    .AddJsonFile($"appsettings.{environment}.json", reloadOnChange: true, optional: true)
-                    .AddJsonFile($"appsettings.{Environment.MachineName}.json", reloadOnChange: true, optional: true)
-                    .AddCommandLine(args)
-                    .AddEnvironmentVariables()
-                    .Build();
-            }
-
-            string GetBasePath()
-            {
-                // When running as a Windows Service, the current directory will be C:\Windows\System32, so we must switch to the assembly directory
-                return WindowsServiceHelpers.IsWindowsService()
-                    ? AppContext.BaseDirectory
-                    : Directory.GetCurrentDirectory();
-            }
-        }
-    }
-
-    internal static class DebugDetector
+    services.AddSingleton<IGetClientProcessInfoService, GetClientProcessInfoService>();
+    services.AddSingleton<IClientQueuedRequests, ClientQueuedRequests>();
+    services.AddSingleton<IClientQueuedResponses, ClientQueuedResponses>();
+    services.AddSingleton<IClientRequestProcessor, ClientRequestProcessor>();
+    services.AddSingleton<IClientResponseMetaDataFactory, ClientResponseMetaDataFactory>();
+    
+    var app = builder.Build();
+    
+    if (app.Environment.IsDevelopment())
     {
-        public static bool AreWeInDebugMode;
-
-        static DebugDetector()
-        {
-            YesWeAre();
-        }
-
-        /**
-         * This method will be stripped out by the compiler when this project is built in Release mode
-         */
-        [Conditional("DEBUG")]
-        private static void YesWeAre()
-        {
-            AreWeInDebugMode = true;
-        }
+        app.UseDeveloperExceptionPage();
     }
+    else
+    {
+        app.UseExceptionHandler("/error");
+    }
+            
+    app.UseStaticFiles();
+    app.UseRouting();
+    app.UseCors();
+    app.MapDefaultControllerRoute();
+
+    await app.RunAsync();
+}
+catch (Exception ex)
+{
+    Log.ForContext<Program>().Fatal(ex, "Bidirectional Demo Client exited with an exception");
+    throw;
+}
+finally
+{
+    Log.ForContext<Program>().Information("Bidirectional Demo Client is shutting down");
+    Log.CloseAndFlush();
 }
