@@ -6,9 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Bidirectional.Demo.Common.Contracts.Client;
 using Bidirectional.Demo.Common.Contracts.Server.GetServerProcessInfo;
+using Bidirectional.Demo.Server.GrpcServices.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Bidirectional.Demo.Server.GrpcServices.Client
+namespace Bidirectional.Demo.Server.GrpcServices
 {
     public class GrpcService : IGrpcService
     {

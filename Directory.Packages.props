@@ -5,17 +5,20 @@
     <NoWarn>$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Grpc.AspNetCore.Server" Version="2.33.1" />
-    <PackageVersion Include="Grpc.Net.Client" Version="2.33.1" />
+    <PackageVersion Include="Grpc.AspNetCore.Server" Version="2.66.0" />
+    <PackageVersion Include="Grpc.Net.Client" Version="2.66.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageVersion Include="protobuf-net" Version="3.0.73" />
-    <PackageVersion Include="protobuf-net.BuildTools" Version="3.0.74" />
-    <PackageVersion Include="protobuf-net.Grpc" Version="1.0.140" />
-    <PackageVersion Include="protobuf-net.Grpc.AspNetCore" Version="1.0.140" />
-    <PackageVersion Include="protobuf-net.Grpc.ClientFactory" Version="1.0.140" />
+    <PackageVersion Include="protobuf-net" Version="3.2.45" />
+    <PackageVersion Include="protobuf-net.BuildTools" Version="3.2.33">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="protobuf-net.Grpc" Version="1.2.2" />
+    <PackageVersion Include="protobuf-net.Grpc.AspNetCore" Version="1.2.2" />
+    <PackageVersion Include="protobuf-net.Grpc.ClientFactory" Version="1.2.2" />
     <PackageVersion Include="Serilog" Version="4.1.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageVersion Include="Serilog.Enrichers.Environment" Version="3.0.1" />

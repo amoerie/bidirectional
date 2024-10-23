@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Bidirectional.Demo.Common.Logging;
+using Bidirectional.Demo.Server.GrpcServices;
 using Bidirectional.Demo.Server.GrpcServices.Client;
 using Bidirectional.Demo.Server.GrpcServices.Client.ClientProcessInformation;
 using Microsoft.AspNetCore.Builder;
