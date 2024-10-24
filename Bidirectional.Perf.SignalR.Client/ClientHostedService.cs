@@ -23,10 +23,10 @@ public class ClientHostedService : IHostedService
         
         // Number of parallel requests
         int numberOfConnections = 25;
+        
         // Number of requests per connection
         int requestsPerConnection = 400;
         
-        // List to hold task results
         List<Task> tasks = new List<Task>();
 
         var stopwatch = Stopwatch.StartNew();

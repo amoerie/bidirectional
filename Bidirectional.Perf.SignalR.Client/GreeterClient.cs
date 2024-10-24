@@ -1,3 +1,4 @@
+using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Bidirectional.Perf.SignalR.Contracts;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -28,26 +29,30 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
             {
                 options.HttpMessageHandlerFactory = handler =>
                 {
-                    if (handler is not HttpClientHandler httpClientHandler)
+                    if (handler is not SocketsHttpHandler socketsHttpHandler)
                     {
-                        httpClientHandler = new HttpClientHandler();
+                        socketsHttpHandler = new SocketsHttpHandler();
                     }
-                    httpClientHandler.ClientCertificates.Add(certificate);
-                    httpClientHandler.ServerCertificateCustomValidationCallback =
-                        (httpRequest, serverCertificate, chain, sslPolicyErrors) =>
+
+                    socketsHttpHandler.SslOptions = new SslClientAuthenticationOptions
+                    {
+                        ClientCertificates = new X509Certificate2Collection { certificate },
+                        RemoteCertificateValidationCallback = (_, serverCertificate, chain, _) =>
                         {
                             if (chain is null)
                             {
-                                var x509ChainPolicy = new X509ChainPolicy { RevocationMode = X509RevocationMode.NoCheck };
+                                var x509ChainPolicy = new X509ChainPolicy
+                                    { RevocationMode = X509RevocationMode.NoCheck };
                                 chain = new X509Chain { ChainPolicy = x509ChainPolicy };
                             }
 
-                            if (serverCertificate is null)
+                            if (serverCertificate is null ||
+                                serverCertificate is not X509Certificate2 serverCertificate2)
                             {
                                 return false;
                             }
 
-                            var isValidChain = chain.Build(serverCertificate);
+                            var isValidChain = chain.Build(serverCertificate2);
 
                             if (!isValidChain)
                             {
@@ -57,15 +62,16 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
 
                                     _logger.LogError(
                                         "Certificate with Subject = {Subject} and Thumbprint = {Thumbprint} chain validation failed: Chain status [{Index}] : {Status} {StatusInformation}",
-                                        serverCertificate.SubjectName.Name,
-                                        serverCertificate.Thumbprint, index, status.Status, status.StatusInformation);
+                                        serverCertificate2.SubjectName.Name,
+                                        serverCertificate2.Thumbprint, index, status.Status, status.StatusInformation);
                                 }
                             }
 
                             return isValidChain;
-                        };
+                        }
+                    };
 
-                    return httpClientHandler;
+                    return socketsHttpHandler;
                 };
             })
             .WithAutomaticReconnect()
