@@ -1,5 +1,7 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 using Bidirectional.Perf.Grpc.Contracts;
+using Google.Protobuf;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -65,6 +67,20 @@ public class ClientHostedService : IHostedService
         var reply = await client.SayHelloAsync(
             new HelloRequest { Name = "GreeterClient" });
         _logger.LogInformation("Received reply: {Message}", reply.Message);
+        
+        var file = new FileInfo(@"C:\Temp\ct-march.raw");
+        if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
+
+        _logger.LogInformation("Sending file");
+        var fileBytes = await File.ReadAllBytesAsync(file.FullName, cancellationToken);
+        var fileRequest = new FileRequest { Name = file.Name, Data = ByteString.CopyFrom(fileBytes) };
+        var stopwatch = Stopwatch.StartNew();
+        using var fileCall = client.SendFile(cancellationToken: cancellationToken);
+        await fileCall.RequestStream.WriteAsync(fileRequest, cancellationToken);
+        await fileCall.RequestStream.CompleteAsync();
+        var fileReply = await fileCall.ResponseAsync;
+        stopwatch.Stop();
+        _logger.LogInformation("File sent! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

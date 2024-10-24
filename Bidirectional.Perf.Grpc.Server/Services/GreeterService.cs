@@ -19,4 +19,18 @@ public class GreeterService : Greeter.GreeterBase
             Message = "Hello " + request.Name
         });
     }
+    
+    public override async Task<FileReply> SendFile(IAsyncStreamReader<FileRequest> requestStream, ServerCallContext context)
+    {
+        var file = await requestStream.MoveNext();
+        if (file == false)
+        {
+            throw new InvalidOperationException("No file received");
+        }
+
+        var fileRequest = requestStream.Current;
+        _logger.LogInformation("Received file: {FileRequestName} with {Round} KB", fileRequest.Name, Math.Round((double)(fileRequest.Data.Length / 1024)));
+
+        return new FileReply();
+    }
 }

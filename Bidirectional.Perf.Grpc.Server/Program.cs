@@ -6,7 +6,10 @@ using Microsoft.AspNetCore.Server.Kestrel.Https;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    options.MaxReceiveMessageSize = 1_000_000_000; // 1GB
+});
 
 // Configure Kestrel to use HTTPS with client certificates
 builder.WebHost.ConfigureKestrel(options =>
@@ -25,6 +28,8 @@ builder.WebHost.ConfigureKestrel(options =>
             httpsOptions.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
         });
     });
+    
+    options.Limits.MaxRequestBodySize = 1_000_000_000; // 1GB
 });
 
 var app = builder.Build();
