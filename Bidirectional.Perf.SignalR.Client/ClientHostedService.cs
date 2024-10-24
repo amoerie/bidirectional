@@ -71,6 +71,25 @@ public class ClientHostedService : IHostedService
         var numberOfRequests = numberOfConnections * requestsPerConnection;
         _logger.LogInformation("Completed {NumberOfRequests} requests over {NumberOfConnections} connections in {StopwatchElapsed}", numberOfRequests, numberOfConnections, stopwatch.Elapsed);
         _logger.LogInformation("Average time per request: {ElapsedMilliseconds} ms", (double) stopwatch.ElapsedMilliseconds / numberOfRequests);
+        
+        var file = new FileInfo(@"C:\Temp\ct-march.raw");
+        if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
+        
+        _logger.LogInformation("Sending file");
+        stopwatch = Stopwatch.StartNew();
+        var fileRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+        var fileResponse = await _greeterClient.SendFile(fileRequest);
+        stopwatch.Stop();
+        _logger.LogInformation("File Sent! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
+        
+        
+        _logger.LogInformation("Streaming file");
+        stopwatch = Stopwatch.StartNew();
+        var fileStreamRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+        var fileStreamResponse = await _greeterClient.StreamFile(fileStreamRequest);
+        stopwatch.Stop();
+        _logger.LogInformation("File Streamed! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
+
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

@@ -8,6 +8,7 @@ namespace Bidirectional.Perf.SignalR.Client;
 
 public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
 {
+    private const int ChunkSize = 256 * 1024; //1KB
     private readonly ILogger<GreeterClient> _logger;
     private IGreeterHub? _greeterHubProxy;
     private IDisposable? _clientRegistration;
@@ -26,6 +27,7 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
         
         var connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:33666/greeterhub", options =>
+            // .WithUrl("https://192.168.0.122:33666/greeterhub", options =>
             {
                 options.HttpMessageHandlerFactory = handler =>
                 {
@@ -114,4 +116,30 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
 
         return _greeterHubProxy.ReceiveFile(request);
     }
+
+    public Task<FileResponse> StreamFile(FileRequest request)
+    {
+        if (_greeterHubProxy is null)
+        {
+            throw new InvalidOperationException("Not connected yet");
+        }
+
+        return _greeterHubProxy.StreamFile(StreamByteArray(request.Data, ChunkSize), request.Name);
+    }
+    
+    private static async IAsyncEnumerable<byte[]> StreamByteArray(byte[] byteArray, int chunkSize)
+    {
+        for (var i = 0; i < byteArray.Length; i += chunkSize)
+        {
+            var length = Math.Min(chunkSize, byteArray.Length - i);
+            var chunk = new byte[length];
+            Array.Copy(byteArray, i, chunk, 0, length);
+            yield return chunk;
+
+            // Optional: Simulate some delay for demonstration purposes
+            // await Task.Delay(100); 
+            await Task.Yield();
+        }
+    }
+
 }

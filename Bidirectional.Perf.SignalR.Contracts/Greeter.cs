@@ -5,6 +5,8 @@ public interface IGreeterHub
     Task<HelloResponse> ReceiveGreeting(HelloRequest request);
     
     Task<FileResponse> ReceiveFile(FileRequest request);
+    
+    Task<FileResponse> StreamFile(IAsyncEnumerable<byte[]> stream, string fileName);
 }
 
 public interface IGreeterClient
@@ -12,6 +14,8 @@ public interface IGreeterClient
     Task<HelloResponse> SendGreeting(HelloRequest request);
 
     Task<FileResponse> SendFile(FileRequest request);
+
+    Task<FileResponse> StreamFile(FileRequest request);
 }
 
 public sealed record HelloRequest(string Name);

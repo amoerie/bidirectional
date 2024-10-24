@@ -16,4 +16,17 @@ public class GreeterHub : Hub<IGreeterClient>, IGreeterHub
 
         return Task.FromResult(new FileResponse());
     }
+
+    public async Task<FileResponse> StreamFile(IAsyncEnumerable<byte[]> stream, string fileName)
+    {
+        using var memoryStream = new MemoryStream();
+        await foreach (var chunk in stream)
+        {
+            await memoryStream.WriteAsync(chunk);
+        }
+        
+        Console.WriteLine($"Received streamed file: {fileName} with {Math.Round((double)(memoryStream.Length / 1024))} KB");
+        
+        return new FileResponse();
+    }
 }
