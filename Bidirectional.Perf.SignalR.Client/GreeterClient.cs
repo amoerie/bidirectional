@@ -2,6 +2,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Bidirectional.Perf.SignalR.Contracts;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Bidirectional.Perf.SignalR.Client;
@@ -76,6 +77,7 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
                     return socketsHttpHandler;
                 };
             })
+            .AddMessagePackProtocol()
             .WithAutomaticReconnect()
             .Build();
         _connection = connection;

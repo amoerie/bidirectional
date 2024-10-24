@@ -1,5 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using Bidirectional.Perf.SignalR.Server;
+using MessagePack;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 
@@ -8,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 services.AddSignalR()
+    .AddMessagePackProtocol(options =>
+    {
+        options.SerializerOptions = MessagePackSerializerOptions.Standard
+            .WithSecurity(MessagePackSecurity.UntrustedData);
+    })
     .AddHubOptions<GreeterHub>(options =>
     {
         options.EnableDetailedErrors = true;

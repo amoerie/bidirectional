@@ -11,8 +11,11 @@
     <PackageVersion Include="Grpc.Core.Api" Version="2.66.0" />
     <PackageVersion Include="Grpc.Net.Client" Version="2.66.0" />
     <PackageVersion Include="Grpc.Tools" Version="2.67.0" />
+    <PackageVersion Include="MessagePack.Annotations" Version="2.5.108" />
+    <PackageVersion Include="MessagePackAnalyzer" Version="2.5.187" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client.SourceGenerator" Version="7.0.0-preview.7.22376.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="8.0.10" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.1" />
