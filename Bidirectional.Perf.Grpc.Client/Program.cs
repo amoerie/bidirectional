@@ -5,10 +5,13 @@
 using Bidirectional.Perf.Grpc.Contracts;
 using Grpc.Net.Client;
 
+Console.WriteLine("Starting up");
 using var channel = GrpcChannel.ForAddress("https://localhost:33658");
 var client = new Greeter.GreeterClient(channel);
+
+Console.WriteLine("Saying hello");
 var reply = await client.SayHelloAsync(
     new HelloRequest { Name = "GreeterClient" });
-Console.WriteLine("Greeting: " + reply.Message);
+Console.WriteLine("Received reply: " + reply.Message);
 Console.WriteLine("Press any key to exit...");
 Console.ReadKey();
