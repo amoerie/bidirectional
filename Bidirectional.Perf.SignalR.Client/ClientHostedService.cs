@@ -21,18 +21,68 @@ public class ClientHostedService : IHostedService
     {
         _logger.LogInformation("Starting up");
 
-        await using var greeterClient = _greeterClientFactory.Create();
-        await greeterClient.ConnectAsync();
-        
-        for (int i = 0; i < 50; i++)
+        const int timeToRunInSeconds = 60;
+        var start = DateTime.UtcNow;
+
+        long requests = 0;
+
+        var tasks = new List<Task>();
+        for (var i = 0; i < 20; i++)
         {
-            var stopwatch = Stopwatch.StartNew();
-            _logger.LogInformation("Getting directory info");
-            var info = await greeterClient.GetDirectoryInfoAsync(@"C:\Temp", 25);
-            stopwatch.Stop();
-            _logger.LogInformation("Success after {Elapsed}ms", stopwatch.Elapsed.TotalMilliseconds);
+            tasks.Add(Task.Run(async () =>
+            {
+                await using var greeterClient = _greeterClientFactory.Create();
+                await greeterClient.ConnectAsync();
+
+                var helloRequest = new HelloRequest("I am a Ddosser!");
+                
+                while (start.AddSeconds(timeToRunInSeconds) > DateTime.UtcNow)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await Parallel.ForAsync(0, 100, cancellationToken, async (_, _) =>
+                    {
+                        await greeterClient.SendGreeting(helloRequest);
+                    });
+                    
+                    Interlocked.Add(ref requests, 100);
+                }
+                
+            }, cancellationToken));
         }
-        
+
+        await Task.WhenAll(tasks);
+
+        _logger.LogInformation("All done");
+        var requestsPerSecond = (double)requests / timeToRunInSeconds;
+        _logger.LogInformation("Sent {Requests} requests in {TimeToRunInSeconds} seconds, that's {RequestsPerSecond} requests per second", requests, timeToRunInSeconds, requestsPerSecond);
+
+        // await using var greeterClient = _greeterClientFactory.Create();
+        // await greeterClient.ConnectAsync();
+
+        /*await TriggerHelloWorldsAsync(200, greeterClient);
+
+        await TriggerDirListingAsync(50, greeterClient);
+
+        _logger.LogInformation("Going to trigger lots of dir listings and hello worlds together");
+        await Task.Delay(100);
+
+        await Task.WhenAll(
+            TriggerHelloWorldsAsync(200, greeterClient),
+            TriggerDirListingAsync(50, greeterClient)
+        );
+
+        _logger.LogInformation("Going to trigger lots of dir listings and hello worlds together with two different clients");
+        await Task.Delay(100);
+
+        await using var greeterClient2 = _greeterClientFactory.Create();
+        await greeterClient2.ConnectAsync();
+
+        await Task.WhenAll(
+            TriggerHelloWorldsAsync(200, greeterClient2),
+            TriggerDirListingAsync(50, greeterClient)
+        );*/
+
         // _logger.LogInformation("{Json}", infoAsJson);
 
         // var file = new FileInfo(@"C:\Temp\ct-march.raw");
@@ -53,6 +103,28 @@ public class ClientHostedService : IHostedService
         // stopwatch.Stop();
         // _logger.LogInformation("File Streamed! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
 
+    }
+
+    private async Task TriggerHelloWorldsAsync(int count, GreeterClient greeterClient)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        for (var i = 0; i < count; i++)
+        {
+            await greeterClient.SendGreeting(new HelloRequest("Hi number " + i));
+        }
+        stopwatch.Stop();
+        _logger.LogInformation("Sent {Count} hellos in {ElapsedMilliseconds}ms (= {ElapsedPerCall:N2}ms per call)", count, stopwatch.ElapsedMilliseconds, (double)stopwatch.ElapsedMilliseconds / count);
+    }
+
+    private async Task TriggerDirListingAsync(int count, GreeterClient greeterClient)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        for (var i = 0; i < count; i++)
+        {
+            var info = await greeterClient.GetDirectoryInfoAsync(@"C:\Temp", 25);
+        }
+        stopwatch.Stop();
+        _logger.LogInformation("Sent {Count} dir listings in {ElapsedMilliseconds}ms (= {ElapsedPerCall:N2}ms per call)", count, stopwatch.ElapsedMilliseconds, (double)stopwatch.ElapsedMilliseconds / count);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

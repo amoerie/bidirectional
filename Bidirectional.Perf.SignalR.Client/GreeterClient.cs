@@ -29,8 +29,8 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
             .Find(X509FindType.FindBySubjectDistinguishedName, "CN=Client, O=Palex, C=BE", true).First();
 
         var connection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:33666/greeterhub", options =>
-                // .WithUrl("https://192.168.0.122:33666/greeterhub", options =>
+            // .WithUrl("https://localhost:33666/greeterhub", options =>
+                .WithUrl("https://192.168.0.122:33666/greeterhub", options =>
             {
                 options.HttpMessageHandlerFactory = handler =>
                 {
