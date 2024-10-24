@@ -14,7 +14,7 @@ builder.Services.AddGrpc(options =>
 // Configure Kestrel to use HTTPS with client certificates
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenLocalhost(33658, listenOptions =>
+    options.ListenAnyIP(33658, listenOptions =>
     {
         listenOptions.Protocols = HttpProtocols.Http2;
         listenOptions.UseHttps(httpsOptions =>

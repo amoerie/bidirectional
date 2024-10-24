@@ -17,7 +17,7 @@ services.AddSignalR()
 // Configure Kestrel to use HTTPS with client certificates
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenLocalhost(33666, listenOptions =>
+    options.ListenAnyIP(33666, listenOptions =>
     {
         listenOptions.Protocols = HttpProtocols.Http2;
         listenOptions.UseHttps(httpsOptions =>
