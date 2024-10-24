@@ -12,7 +12,8 @@ services.AddSignalR()
     .AddMessagePackProtocol(options =>
     {
         options.SerializerOptions = MessagePackSerializerOptions.Standard
-            .WithSecurity(MessagePackSecurity.UntrustedData);
+            .WithSecurity(MessagePackSecurity.UntrustedData)
+            .WithCompression(MessagePackCompression.Lz4BlockArray);
     })
     .AddHubOptions<GreeterHub>(options =>
     {

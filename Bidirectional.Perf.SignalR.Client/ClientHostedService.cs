@@ -20,14 +20,6 @@ public class ClientHostedService : IHostedService
     {
         _logger.LogInformation("Starting up");
         
-        // Number of parallel requests
-        int numberOfConnections = 25;
-        
-        // Number of requests per connection
-        int requestsPerConnection = 400;
-        
-        List<Task> tasks = new List<Task>();
-
         var stopwatch = Stopwatch.StartNew();
 
         await using var greeterClient = _greeterClientFactory.Create();
