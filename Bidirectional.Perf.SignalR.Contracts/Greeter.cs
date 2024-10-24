@@ -9,7 +9,7 @@ public interface IGreeterHub
     Task<FileResponse> ReceiveFile(FileRequest request);
 
     Task<FileResponse> StreamFile(IAsyncEnumerable<byte[]> stream, string fileName);
-    Task<DirectoryDto> GetDirectoryInfoAsync(string path);
+    Task<DirectoryDto> GetDirectoryInfoAsync(string path, int depth = 3);
 }
 
 public interface IGreeterClient
@@ -20,7 +20,7 @@ public interface IGreeterClient
 
     Task<FileResponse> StreamFile(FileRequest request);
     
-    Task<DirectoryDto> GetDirectoryInfoAsync(string path);
+    Task<DirectoryDto> GetDirectoryInfoAsync(string path, int depth = 3);
 }
 
 [MessagePackObject]

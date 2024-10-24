@@ -13,7 +13,8 @@ services.AddSignalR()
     {
         options.SerializerOptions = MessagePackSerializerOptions.Standard
             .WithSecurity(MessagePackSecurity.UntrustedData)
-            .WithCompression(MessagePackCompression.Lz4BlockArray);
+            .WithCompression(MessagePackCompression.Lz4BlockArray)
+            .WithCompressionMinLength(256 * 1024);
     })
     .AddHubOptions<GreeterHub>(options =>
     {

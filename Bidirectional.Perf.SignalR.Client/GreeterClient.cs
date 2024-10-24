@@ -1,6 +1,7 @@
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using Bidirectional.Perf.SignalR.Contracts;
+using MessagePack;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -78,7 +79,13 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
                     return socketsHttpHandler;
                 };
             })
-            .AddMessagePackProtocol()
+            .AddMessagePackProtocol(o =>
+            {
+                o.SerializerOptions = MessagePackSerializerOptions.Standard
+                    .WithSecurity(MessagePackSecurity.UntrustedData)
+                    .WithCompression(MessagePackCompression.Lz4BlockArray)
+                    .WithCompressionMinLength(256 * 1024);
+            })
             .WithAutomaticReconnect()
             .Build();
         _connection = connection;
@@ -130,14 +137,14 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
         return _greeterHubProxy.StreamFile(StreamByteArray(request.Data, ChunkSize), request.Name);
     }
 
-    public Task<DirectoryDto> GetDirectoryInfoAsync(string path)
+    public Task<DirectoryDto> GetDirectoryInfoAsync(string path, int depth = 3)
     {
         if (_greeterHubProxy is null)
         {
             throw new InvalidOperationException("Not connected yet");
         }
 
-        return _greeterHubProxy.GetDirectoryInfoAsync(path);
+        return _greeterHubProxy.GetDirectoryInfoAsync(path, depth);
     }
 
     private static async IAsyncEnumerable<byte[]> StreamByteArray(byte[] byteArray, int chunkSize)

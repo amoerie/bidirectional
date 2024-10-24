@@ -1,10 +1,20 @@
-﻿using Bidirectional.Perf.SignalR.Contracts;
+﻿using System.Diagnostics;
+using System.Text.Json;
+using Bidirectional.Perf.SignalR.Contracts;
+using Bidirectional.Perf.SignalR.Contracts.Utils;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Bidirectional.Perf.SignalR.Server;
 
 public class GreeterHub : Hub<IGreeterClient>, IGreeterHub
 {
+    private readonly ILogger<GreeterHub> _logger;
+
+    public GreeterHub(ILogger<GreeterHub> logger)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+    
     public Task<HelloResponse> ReceiveGreeting(HelloRequest request)
     {
         return Task.FromResult(new HelloResponse("Hello " + request.Name));
@@ -30,15 +40,15 @@ public class GreeterHub : Hub<IGreeterClient>, IGreeterHub
         return new FileResponse();
     }
 
-    public async Task<DirectoryDto> GetDirectoryInfoAsync(string path)
+    public Task<DirectoryDto> GetDirectoryInfoAsync(string path, int depth = 3)
     {
-        var directoryInfo = new DirectoryInfo(path);
+        var sw = Stopwatch.StartNew();
+        var result = FileManager.GetPath(path, depth);
+        sw.Stop();
+        _logger.LogInformation("Backend call took {Elapsed}ms", sw.Elapsed.TotalMilliseconds);
 
-        return new DirectoryDto
-        {
-            Name = directoryInfo.Name,
-            CreationDateTime = directoryInfo.CreationTimeUtc,
-            LastUpdateDateTime = directoryInfo.LastWriteTimeUtc,
-        };
+        // _logger.LogInformation("Result: {Json}", JsonSerializer.Serialize(result, new JsonSerializerOptions(JsonSerializerDefaults.Web) { WriteIndented = true }));
+        
+        return Task.FromResult(result);
     }
 }

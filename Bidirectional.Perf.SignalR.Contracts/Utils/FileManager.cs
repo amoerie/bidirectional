@@ -1,6 +1,4 @@
-﻿using Bidirectional.Perf.SignalR.Contracts;
-
-namespace Bidirectional.Perf.SignalR.Client.Utils;
+﻿namespace Bidirectional.Perf.SignalR.Contracts.Utils;
 
 public sealed class FileManager
 {

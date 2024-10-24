@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
 using Bidirectional.Perf.SignalR.Contracts;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,15 +20,20 @@ public class ClientHostedService : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting up");
-        
-        var stopwatch = Stopwatch.StartNew();
 
         await using var greeterClient = _greeterClientFactory.Create();
         await greeterClient.ConnectAsync();
-
-        _logger.LogInformation("Getting directory info");
-        var info = await greeterClient.GetDirectoryInfoAsync(@"C:\Users\a.moerman\Downloads\teststudies");
-        _logger.LogInformation("Success!");
+        
+        for (int i = 0; i < 50; i++)
+        {
+            var stopwatch = Stopwatch.StartNew();
+            _logger.LogInformation("Getting directory info");
+            var info = await greeterClient.GetDirectoryInfoAsync(@"C:\Temp", 25);
+            stopwatch.Stop();
+            _logger.LogInformation("Success after {Elapsed}ms", stopwatch.Elapsed.TotalMilliseconds);
+        }
+        
+        // _logger.LogInformation("{Json}", infoAsJson);
 
         // var file = new FileInfo(@"C:\Temp\ct-march.raw");
         // if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);

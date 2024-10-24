@@ -27,8 +27,8 @@ public sealed record FileDto : FileSystemBase
 public sealed record DirectoryDto : FileSystemBase
 {
     [Key(4)]
-    public IList<FileSystemBase> Files { get; init; } = new List<FileSystemBase>();
+    public IList<FileDto> Files { get; init; } = new List<FileDto>();
     
     [Key(5)]
-    public IList<FileSystemBase> Directories { get; init; } = new List<FileSystemBase>();
+    public IList<DirectoryDto> Directories { get; init; } = new List<DirectoryDto>();
 }
