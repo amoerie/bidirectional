@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Bidirectional.Perf.Grpc.Contracts;
+using Google.Protobuf;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -20,57 +21,18 @@ public class ClientHostedService : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
          _logger.LogInformation("Starting up");
-        
-        // Number of parallel requests
-        int numberOfConnections = 25;
-        
-        // Number of requests per connection
-        int requestsPerConnection = 400;
-        
-        List<Task> tasks = new List<Task>();
-
-        var stopwatch = Stopwatch.StartNew();
-            
-        // Launch multiple connections (parallel tasks)
-        for (int i = 0; i < numberOfConnections; i++)
-        {
-            var iCopy = i;
-            tasks.Add(Task.Run(async () =>
-            {
-                await using var greeterClient = _greeterClientFactory.Create();
-                
-                await greeterClient.ConnectAsync();
-                
-                for (int j = 0; j < requestsPerConnection; j++)
-                {
-                    try
-                    {
-                        var jCopy = j;
-                        var reply = await greeterClient.SayHello(new HelloRequest { Name = $"Client {iCopy}-{jCopy}" });
-                        // _logger.LogInformation("Response: {ReplyMessage}", reply.Message);
-                        
-                        // var file = new FileInfo(@"C:\Temp\ct-march.raw");
-                        // if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
-                        // var fileRequest = new FileRequest("file", await File.ReadAllBytesAsync(file.FullName, cancellationToken));
-                        // var fileResponse = await _greeterClient.SendFile(fileRequest);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Error sending greeting");
-                    }
-                }
-            }, cancellationToken));
-        }
-
-        // Wait for all tasks to complete
-        await Task.WhenAll(tasks);
-        
-        stopwatch.Stop();
-
-        // Output the results
-        var numberOfRequests = numberOfConnections * requestsPerConnection;
-        _logger.LogInformation("Completed {NumberOfRequests} requests over {NumberOfConnections} connections in {StopwatchElapsed}", numberOfRequests, numberOfConnections, stopwatch.Elapsed);
-        _logger.LogInformation("Average time per request: {ElapsedMilliseconds} ms", (double) stopwatch.ElapsedMilliseconds / numberOfRequests);
+         
+         await using var greeterClient = _greeterClientFactory.Create();
+         await greeterClient.ConnectAsync();
+         
+         var file = new FileInfo(@"C:\Temp\ct-march.raw");
+         if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
+         var fileBytes = await File.ReadAllBytesAsync(file.FullName, cancellationToken);
+         var fileRequest = new FileRequest { Name = file.Name, Data = ByteString.CopyFrom(fileBytes) };
+         var stopwatch = Stopwatch.StartNew();
+         var fileResponse = await greeterClient.SendFile(fileRequest);
+         stopwatch.Stop();
+        _logger.LogInformation("File sent in {ElapsedMilliseconds}ms", stopwatch.ElapsedMilliseconds);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

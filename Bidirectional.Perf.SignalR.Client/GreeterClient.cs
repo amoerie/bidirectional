@@ -8,7 +8,7 @@ namespace Bidirectional.Perf.SignalR.Client;
 
 public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
 {
-    private const int ChunkSize = 256 * 1024; //1KB
+    private const int ChunkSize = 265 * 1024; //1KB
     private readonly ILogger<GreeterClient> _logger;
     private IGreeterHub? _greeterHubProxy;
     private IDisposable? _clientRegistration;

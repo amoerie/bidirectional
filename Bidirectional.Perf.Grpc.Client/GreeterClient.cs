@@ -61,6 +61,7 @@ public class GreeterClient : IAsyncDisposable
             }
         };
         _channel = GrpcChannel.ForAddress("https://localhost:33658", new GrpcChannelOptions
+        // _channel = GrpcChannel.ForAddress("https://192.168.0.122:33658", new GrpcChannelOptions
         {
             HttpHandler = certificateAwareHandler,
         });
@@ -77,6 +78,19 @@ public class GreeterClient : IAsyncDisposable
         }
 
         return await _client.SayHelloAsync(helloRequest);
+    }
+    
+    public async Task<FileReply> SendFile(FileRequest fileRequest)
+    {
+        if (_client is null)
+        {
+            throw new InvalidOperationException("Client is not connected");
+        }
+
+        using var call = _client.SendFile();
+        await call.RequestStream.WriteAsync(fileRequest);
+        await call.RequestStream.CompleteAsync();
+        return await call.ResponseAsync;
     }
 
     public ValueTask DisposeAsync()
