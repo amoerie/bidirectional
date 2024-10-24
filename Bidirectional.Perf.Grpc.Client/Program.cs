@@ -1,17 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Bidirectional.Perf.Grpc.Client;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-// The port number must match the port of the gRPC server.
+var builder = Host.CreateApplicationBuilder(args);
 
-using Bidirectional.Perf.Grpc.Contracts;
-using Grpc.Net.Client;
+builder.Services.AddHostedService<ClientHostedService>();
 
-Console.WriteLine("Starting up");
-using var channel = GrpcChannel.ForAddress("https://localhost:33658");
-var client = new Greeter.GreeterClient(channel);
+var app = builder.Build();
 
-Console.WriteLine("Saying hello");
-var reply = await client.SayHelloAsync(
-    new HelloRequest { Name = "GreeterClient" });
-Console.WriteLine("Received reply: " + reply.Message);
-Console.WriteLine("Press any key to exit...");
-Console.ReadKey();
+await app.RunAsync();
