@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Perf.Grpc.Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Perf.SignalR.Server", "Bidirectional.Perf.SignalR.Server\Bidirectional.Perf.SignalR.Server.csproj", "{7A0186D1-01C9-434C-B959-552CD4267465}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Perf.SIgnalR.Contracts", "Bidirectional.Perf.SIgnalR.Contracts\Bidirectional.Perf.SIgnalR.Contracts.csproj", "{B38DB653-625A-47A4-88AF-AD21CB38BC11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Perf.SignalR.Contracts", "Bidirectional.Perf.SignalR.Contracts\Bidirectional.Perf.SignalR.Contracts.csproj", "{B38DB653-625A-47A4-88AF-AD21CB38BC11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bidirectional.Perf.SignalR.Client", "Bidirectional.Perf.SignalR.Client\Bidirectional.Perf.SignalR.Client.csproj", "{49A9DF31-296C-44FC-8992-7B75A3D6F495}"
 EndProject

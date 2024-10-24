@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Bidirectional.Perf.SIgnalR.Contracts\Bidirectional.Perf.SIgnalR.Contracts.csproj" />
+      <ProjectReference Include="..\Bidirectional.Perf.SignalR.Contracts\Bidirectional.Perf.SignalR.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

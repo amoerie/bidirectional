@@ -1,7 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using Bidirectional.Perf.SignalR.Client;
-using Bidirectional.Perf.SIgnalR.Contracts;
+using Bidirectional.Perf.SignalR.Contracts;
 using Microsoft.AspNetCore.SignalR.Client;
 
 Console.WriteLine("Starting up");
@@ -12,44 +12,47 @@ await client.ConnectAsync();
 
 Console.WriteLine("Saying hello");
 
-var response = await client.Greet(new HelloRequest("signalR client"));
+var response = await client.SendGreeting(new HelloRequest("signalR client"));
 
 Console.WriteLine("Received reply: " + response.Message);
 Console.WriteLine("Press any key to exit...");
 Console.ReadKey();
 
 
-public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
+namespace Bidirectional.Perf.SignalR.Client
 {
-    private readonly IGreeterHub _greeterHubProxy;
-    private readonly IDisposable _clientRegistration;
-    private readonly HubConnection _connection;
-
-    public GreeterClient()
+    public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
     {
-        var connection = new HubConnectionBuilder()
-            .WithUrl("https://localhost:33666/greeterhub")
-            .WithAutomaticReconnect()
-            .Build();
-        _connection = connection;
-        _greeterHubProxy = _connection.ServerProxy<IGreeterHub>();
-        _clientRegistration = _connection.ClientRegistration<IGreeterClient>(this);
-    }
+        private readonly IGreeterHub _greeterHubProxy;
+        private readonly IDisposable _clientRegistration;
+        private readonly HubConnection _connection;
 
-    public Task ConnectAsync() => _connection.StartAsync();
+        public GreeterClient()
+        {
+            var connection = new HubConnectionBuilder()
+                .WithUrl("https://localhost:33666/greeterhub")
+                .WithAutomaticReconnect()
+                .Build();
+            _connection = connection;
+            _greeterHubProxy = _connection.ServerProxy<IGreeterHub>();
+            _clientRegistration = _connection.ClientRegistration<IGreeterClient>(this);
+        }
 
-    public async ValueTask DisposeAsync()
-    {
-        if (_clientRegistration is IAsyncDisposable registrationAsyncDisposable)
-            await registrationAsyncDisposable.DisposeAsync();
-        else
-            _clientRegistration.Dispose();
+        public Task ConnectAsync() => _connection.StartAsync();
 
-        await _connection.DisposeAsync();
-    }
+        public async ValueTask DisposeAsync()
+        {
+            if (_clientRegistration is IAsyncDisposable registrationAsyncDisposable)
+                await registrationAsyncDisposable.DisposeAsync();
+            else
+                _clientRegistration.Dispose();
 
-    public Task<HelloResponse> Greet(HelloRequest request)
-    {
-        return _greeterHubProxy.OnGreet(request);
+            await _connection.DisposeAsync();
+        }
+
+        public Task<HelloResponse> SendGreeting(HelloRequest request)
+        {
+            return _greeterHubProxy.ReceiveGreeting(request);
+        }
     }
 }
