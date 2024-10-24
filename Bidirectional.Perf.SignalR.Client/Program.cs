@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
 
+builder.Services.TryAddSingleton<IGreeterClientFactory, GreeterClientFactory>();
 builder.Services.TryAddSingleton<GreeterClient>();
 builder.Services.AddHostedService<ClientHostedService>();
 

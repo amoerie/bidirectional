@@ -8,36 +8,69 @@ namespace Bidirectional.Perf.SignalR.Client;
 public class ClientHostedService : IHostedService
 {
     private readonly ILogger<ClientHostedService> _logger;
+    private readonly IGreeterClientFactory _greeterClientFactory;
     private readonly GreeterClient _greeterClient;
 
-    public ClientHostedService(ILogger<ClientHostedService> logger, GreeterClient greeterClient)
+    public ClientHostedService(ILogger<ClientHostedService> logger, IGreeterClientFactory greeterClientFactory)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _greeterClient = greeterClient ?? throw new ArgumentNullException(nameof(greeterClient));
+        _greeterClientFactory = greeterClientFactory ?? throw new ArgumentNullException(nameof(greeterClientFactory));
     }
     
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting up");
-
-        await _greeterClient.ConnectAsync();
-
-        _logger.LogInformation("Saying hello");
-        var response = await _greeterClient.SendGreeting(new HelloRequest("signalR client"));
-        _logger.LogInformation("Received reply: {Message}", response.Message);
         
+        // Number of parallel requests
+        int numberOfConnections = 25;
+        // Number of requests per connection
+        int requestsPerConnection = 400;
         
-        var file = new FileInfo(@"C:\Temp\ct-march.raw");
-        if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
+        // List to hold task results
+        List<Task> tasks = new List<Task>();
 
-        _logger.LogInformation("Sending file");
         var stopwatch = Stopwatch.StartNew();
-        var fileRequest = new FileRequest("file", await File.ReadAllBytesAsync(file.FullName, cancellationToken));
-        var fileResponse = await _greeterClient.SendFile(fileRequest);
-        stopwatch.Stop();
-        _logger.LogInformation("File Sent! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
+            
+        // Launch multiple connections (parallel tasks)
+        for (int i = 0; i < numberOfConnections; i++)
+        {
+            var iCopy = i;
+            tasks.Add(Task.Run(async () =>
+            {
+                await using var greeterClient = _greeterClientFactory.Create();
+                
+                await greeterClient.ConnectAsync();
+                
+                for (int j = 0; j < requestsPerConnection; j++)
+                {
+                    try
+                    {
+                        var jCopy = j;
+                        var reply = await greeterClient.SendGreeting(new HelloRequest($"Client {iCopy}-{jCopy}"));
+                        // _logger.LogInformation("Response: {ReplyMessage}", reply.Message);
+                        
+                        // var file = new FileInfo(@"C:\Temp\ct-march.raw");
+                        // if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
+                        // var fileRequest = new FileRequest("file", await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+                        // var fileResponse = await _greeterClient.SendFile(fileRequest);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error sending greeting");
+                    }
+                }
+            }, cancellationToken));
+        }
+
+        // Wait for all tasks to complete
+        await Task.WhenAll(tasks);
         
-        _logger.LogInformation("Press any key to exit...");
+        stopwatch.Stop();
+
+        // Output the results
+        var numberOfRequests = numberOfConnections * requestsPerConnection;
+        _logger.LogInformation("Completed {NumberOfRequests} requests over {NumberOfConnections} connections in {StopwatchElapsed}", numberOfRequests, numberOfConnections, stopwatch.Elapsed);
+        _logger.LogInformation("Average time per request: {ElapsedMilliseconds} ms", (double) stopwatch.ElapsedMilliseconds / numberOfRequests);
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
