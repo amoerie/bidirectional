@@ -1,11 +1,13 @@
-﻿namespace Bidirectional.Perf.SignalR.Contracts;
+﻿using MessagePack;
+
+namespace Bidirectional.Perf.SignalR.Contracts;
 
 public interface IGreeterHub
 {
     Task<HelloResponse> ReceiveGreeting(HelloRequest request);
-    
+
     Task<FileResponse> ReceiveFile(FileRequest request);
-    
+
     Task<FileResponse> StreamFile(IAsyncEnumerable<byte[]> stream, string fileName);
 }
 
@@ -18,8 +20,14 @@ public interface IGreeterClient
     Task<FileResponse> StreamFile(FileRequest request);
 }
 
-public sealed record HelloRequest(string Name);
-public sealed record HelloResponse(string Message);
+[MessagePackObject]
+public sealed record HelloRequest([property: Key(0)] string Name);
 
-public sealed record FileRequest(string Name, byte[] Data);
+[MessagePackObject]
+public sealed record HelloResponse([property: Key(0)] string Message);
+
+[MessagePackObject]
+public sealed record FileRequest([property: Key(0)] string Name, [property: Key(1)] byte[] Data);
+
+[MessagePackObject]
 public sealed record FileResponse;
