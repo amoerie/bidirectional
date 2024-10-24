@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Bidirectional.Demo.Client" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/Bidirectional.Demo.Client/bin/Debug/Bidirectional.Demo.Client.exe" />
+  <configuration default="false" name="Bidirectional.Grpc.Client" type="DotNetProject" factoryName=".NET Project">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Bidirectional.Grpc.Client/bin/Debug/Bidirectional.Grpc.Client.exe" />
     <option name="PROGRAM_PARAMETERS" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Bidirectional.Demo.Client" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Bidirectional.Grpc.Client" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="1" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Bidirectional.Demo.Client/Bidirectional.Demo.Client.csproj" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Bidirectional.Grpc.Client/Bidirectional.Grpc.Client.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
