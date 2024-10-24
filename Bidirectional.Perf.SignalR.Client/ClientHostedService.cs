@@ -32,10 +32,18 @@ public class ClientHostedService : IHostedService
 
         _logger.LogInformation("Sending file");
         var stopwatch = Stopwatch.StartNew();
-        var fileRequest = new FileRequest("file", await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+        var fileRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
         var fileResponse = await _greeterClient.SendFile(fileRequest);
         stopwatch.Stop();
         _logger.LogInformation("File Sent! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
+        
+        
+        _logger.LogInformation("Streaming file");
+        stopwatch = Stopwatch.StartNew();
+        var fileStreamRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+        var fileStreamResponse = await _greeterClient.StreamFile(fileStreamRequest);
+        stopwatch.Stop();
+        _logger.LogInformation("File Streamed! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
         
         _logger.LogInformation("Press any key to exit...");
     }

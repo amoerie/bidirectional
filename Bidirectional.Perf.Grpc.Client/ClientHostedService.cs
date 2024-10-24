@@ -57,7 +57,8 @@ public class ClientHostedService : IHostedService
 
                 return isValidChain;
             };
-        using var channel = GrpcChannel.ForAddress("https://localhost:33658", new GrpcChannelOptions
+        // using var channel = GrpcChannel.ForAddress("https://localhost:33658", new GrpcChannelOptions
+        using var channel = GrpcChannel.ForAddress("https://192.168.0.122:33658", new GrpcChannelOptions
         {
             HttpHandler = certificateAwareHandler
         });
