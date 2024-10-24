@@ -29,4 +29,16 @@ public class GreeterHub : Hub<IGreeterClient>, IGreeterHub
         
         return new FileResponse();
     }
+
+    public async Task<DirectoryDto> GetDirectoryInfoAsync(string path)
+    {
+        var directoryInfo = new DirectoryInfo(path);
+
+        return new DirectoryDto
+        {
+            Name = directoryInfo.Name,
+            CreationDateTime = directoryInfo.CreationTimeUtc,
+            LastUpdateDateTime = directoryInfo.LastWriteTimeUtc,
+        };
+    }
 }

@@ -24,24 +24,28 @@ public class ClientHostedService : IHostedService
 
         await using var greeterClient = _greeterClientFactory.Create();
         await greeterClient.ConnectAsync();
-        
-        var file = new FileInfo(@"C:\Temp\ct-march.raw");
-        if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
-        
-        _logger.LogInformation("Sending file");
-        stopwatch = Stopwatch.StartNew();
-        var fileRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
-        var fileResponse = await greeterClient.SendFile(fileRequest);
-        stopwatch.Stop();
-        _logger.LogInformation("File Sent! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
-        
-        
-        _logger.LogInformation("Streaming file");
-        stopwatch = Stopwatch.StartNew();
-        var fileStreamRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
-        var fileStreamResponse = await greeterClient.StreamFile(fileStreamRequest);
-        stopwatch.Stop();
-        _logger.LogInformation("File Streamed! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
+
+        _logger.LogInformation("Getting directory info");
+        var info = await greeterClient.GetDirectoryInfoAsync(@"C:\Users\a.moerman\Downloads\teststudies");
+        _logger.LogInformation("Success!");
+
+        // var file = new FileInfo(@"C:\Temp\ct-march.raw");
+        // if (!file.Exists) throw new InvalidOperationException("Alex you fool, the file I sent you should exist under " + file.FullName);
+        //
+        // _logger.LogInformation("Sending file");
+        // stopwatch = Stopwatch.StartNew();
+        // var fileRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+        // var fileResponse = await greeterClient.SendFile(fileRequest);
+        // stopwatch.Stop();
+        // _logger.LogInformation("File Sent! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
+        //
+        //
+        // _logger.LogInformation("Streaming file");
+        // stopwatch = Stopwatch.StartNew();
+        // var fileStreamRequest = new FileRequest(file.Name, await File.ReadAllBytesAsync(file.FullName, cancellationToken));
+        // var fileStreamResponse = await greeterClient.StreamFile(fileStreamRequest);
+        // stopwatch.Stop();
+        // _logger.LogInformation("File Streamed! In {ElapsedMilliseconds} ms", stopwatch.ElapsedMilliseconds);
 
     }
 

@@ -24,11 +24,12 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
     {
         using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
         store.Open(OpenFlags.ReadOnly);
-        var certificate = store.Certificates.Find(X509FindType.FindBySubjectDistinguishedName, "CN=Client, O=Palex, C=BE", true).First();
-        
+        var certificate = store.Certificates
+            .Find(X509FindType.FindBySubjectDistinguishedName, "CN=Client, O=Palex, C=BE", true).First();
+
         var connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:33666/greeterhub", options =>
-            // .WithUrl("https://192.168.0.122:33666/greeterhub", options =>
+                // .WithUrl("https://192.168.0.122:33666/greeterhub", options =>
             {
                 options.HttpMessageHandlerFactory = handler =>
                 {
@@ -83,7 +84,7 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
         _connection = connection;
         _greeterHubProxy = _connection.ServerProxy<IGreeterHub>();
         _clientRegistration = _connection.ClientRegistration<IGreeterClient>(this);
-        await  _connection.StartAsync();
+        await _connection.StartAsync();
     }
 
     public async ValueTask DisposeAsync()
@@ -105,7 +106,7 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
         {
             throw new InvalidOperationException("Not connected yet");
         }
-        
+
         return _greeterHubProxy.ReceiveGreeting(request);
     }
 
@@ -128,7 +129,17 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
 
         return _greeterHubProxy.StreamFile(StreamByteArray(request.Data, ChunkSize), request.Name);
     }
-    
+
+    public Task<DirectoryDto> GetDirectoryInfoAsync(string path)
+    {
+        if (_greeterHubProxy is null)
+        {
+            throw new InvalidOperationException("Not connected yet");
+        }
+
+        return _greeterHubProxy.GetDirectoryInfoAsync(path);
+    }
+
     private static async IAsyncEnumerable<byte[]> StreamByteArray(byte[] byteArray, int chunkSize)
     {
         for (var i = 0; i < byteArray.Length; i += chunkSize)
@@ -143,5 +154,4 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
             await Task.Yield();
         }
     }
-
 }
