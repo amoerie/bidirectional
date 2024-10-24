@@ -98,4 +98,14 @@ public sealed class GreeterClient : IGreeterClient, IAsyncDisposable
         
         return _greeterHubProxy.ReceiveGreeting(request);
     }
+
+    public Task<FileResponse> SendFile(FileRequest request)
+    {
+        if (_greeterHubProxy is null)
+        {
+            throw new InvalidOperationException("Not connected yet");
+        }
+
+        return _greeterHubProxy.ReceiveFile(request);
+    }
 }

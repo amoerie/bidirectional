@@ -7,7 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
-services.AddSignalR();
+services.AddSignalR()
+    .AddHubOptions<GreeterHub>(options =>
+    {
+        options.EnableDetailedErrors = true;
+        options.MaximumReceiveMessageSize = 1_000_000_000; // 1GB
+    });
 
 // Configure Kestrel to use HTTPS with client certificates
 builder.WebHost.ConfigureKestrel(options =>
@@ -26,6 +31,8 @@ builder.WebHost.ConfigureKestrel(options =>
             httpsOptions.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
         });
     });
+
+    options.Limits.MaxRequestBodySize = 1_000_000_000; // 1GB
 });
 
 var app = builder.Build();

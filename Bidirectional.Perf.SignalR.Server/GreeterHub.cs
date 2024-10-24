@@ -9,4 +9,11 @@ public class GreeterHub : Hub<IGreeterClient>, IGreeterHub
     {
         return Task.FromResult(new HelloResponse("Hello " + request.Name));
     }
+
+    public Task<FileResponse> ReceiveFile(FileRequest request)
+    {
+        Console.WriteLine($"Received file: {request.Name} with {Math.Round((double)(request.Data.Length / 1024))} KB");
+
+        return Task.FromResult(new FileResponse());
+    }
 }
